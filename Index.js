@@ -141,6 +141,8 @@ async function run(){
             res.send({ isAdmin: user?.role === 'admin' });
         })
 
+
+        // Seller API
         app.get('/users/seller/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email }
@@ -157,7 +159,14 @@ async function run(){
             res.send(seller);
         })
 
+        app.delete('/users/seller/:id', async(req, res)=>{
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(filter);
+            res.send(result);
+        })
 
+        // Buyer Api
         app.get('/users/buyer/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email }
@@ -172,6 +181,15 @@ async function run(){
             const buyer = await usersCollection.find(query).toArray();
             console.log(buyer)
             res.send(buyer);
+        })
+
+
+        app.delete('/users/buyer/:id', async(req, res)=>{
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(filter);
+            res.send(result);
+            console.log(result);
         })
 
 
