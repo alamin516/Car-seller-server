@@ -43,9 +43,11 @@ async function run(){
         const carsCollection = client.db('CarSeller').collection('cars');
         const categoriesCollection = client.db('CarSeller').collection('categories');
         const usersCollection = client.db('CarSeller').collection('users');
+        const locationsCollection = client.db('CarSeller').collection('locations');
 
 
 
+        // CATEGORY
         app.get('/categories', async(req, res)=>{
             const query = {}
             const result = await categoriesCollection.find(query).toArray();
@@ -61,7 +63,7 @@ async function run(){
 
 
         app.post('/products', async(req, res)=>{
-            const car = req.body
+            const car = req.body;
             const result = await carsCollection.insertOne(car);
             res.send(result)
 
@@ -74,6 +76,35 @@ async function run(){
             res.send(result)
         })
 
+        app.get('/products/my-products',async(req, res)=>{
+            // let query = {};
+            // if(req.query.email){
+            //     query = {email: req.query?.email}
+            // }
+            const email = req.query.email;
+            const query = {email: email}
+            const result = await carsCollection.find(query).toArray();
+            res.send(result)
+        })
+
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await carsCollection.deleteOne(filter);
+            res.send(result);
+            console.log(result)
+        })
+
+
+        // Location
+        app.get('/locations', async(req, res)=> {
+            const query = {};
+            const location = await locationsCollection.find(query).toArray();
+            res.send(location);
+        })
+
+
+        // JWT TOKEN
         app.get('/jwt', async(req, res)=>{
             const email = req.query.email;
             const query = { email: email };
@@ -85,6 +116,9 @@ async function run(){
             res.status(403).send({ accessToken: '' })
         })
 
+
+
+        // USER 
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -139,6 +173,9 @@ async function run(){
             console.log(buyer)
             res.send(buyer);
         })
+
+
+
     }
 
     finally{
