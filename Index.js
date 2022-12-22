@@ -95,9 +95,23 @@ async function run(){
 
         })
 
-        app.get('/products',async(req, res)=>{
+        app.get('/product/:id', async(req, res)=>{
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await carsCollection.findOne(filter);
+            res.send(result)
+            console.log(result)
+        })
+
+        app.get('/products/id',async(req, res)=>{
             const query = req.query?.id;
             const category = {categoryId : query}
+            const result = await carsCollection.find(category).toArray();
+            res.send(result)
+        })
+
+        app.get('/products',async(req, res)=>{
+            const category = {}
             const result = await carsCollection.find(category).toArray();
             res.send(result)
         })
